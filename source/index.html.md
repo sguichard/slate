@@ -3,9 +3,6 @@ title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
-  - ruby
-  - python
-  - javascript
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -29,28 +26,10 @@ This example API documentation page was created with [Slate](https://github.com/
 
 > To authorize, use this code:
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
 ```shell
 # With shell, you can just pass the correct header with each request
 curl "api_endpoint_here"
   -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
 ```
 
 > Make sure to replace `meowmeowmeow` with your API key.
@@ -65,111 +44,86 @@ Kittn expects for the API key to be included in all API requests to the server i
 You must replace <code>meowmeowmeow</code> with your personal API key.
 </aside>
 
-# Kittens
+# Flow Sensors
 
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+## Get All Flow Sensors
 
 ```shell
-curl "http://example.com/api/kittens"
+curl "https://app.flowcommand.com/api/v1/flow_sensors/"
   -H "Authorization: meowmeowmeow"
 ```
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
 
 > The above command returns JSON structured like this:
 
 ```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
+{
+	"count": 2,
+	"next": null,
+	"previous": null,
+	"results": [{
+		"id": 1,
+		"name": "Sensor 1",
+		"latitude": 29.760435,
+		"longitude": -95.3698,
+		"pipe_diameter": 14.64,
+		"last_ping_flowrate": 5356.92,
+		"last_ping_datetime": "2019-02-05T20:41:02+00:00"
+	}, {
+		"id": 2,
+		"name": "Sensor 2",
+		"latitude": 29.760435,
+		"longitude": -95.3698,
+		"pipe_diameter": 19.14,
+		"last_ping_flowrate": 0,
+		"last_ping_datetime": "2019-02-05T20:15:08+00:00"
+	}]
+}
 ```
 
-This endpoint retrieves all kittens.
+This endpoint retrieves all sensors.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET https://app.flowcommand.com/api/v1/flow_sensors/`
 
 ### Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+page | 1 | Page (each page contains 1000 items)
 
 <aside class="success">
 Remember — a happy kitten is an authenticated kitten!
 </aside>
 
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
+## Get Pings for a Specific Flow Sensor
 
 ```shell
-curl "http://example.com/api/kittens/2"
+curl "https://app.flowcommand.com/api/v1/flow_sensors/1/pings/"
   -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+	"count": 2,
+	"next": null,
+	"previous": null,
+	"results": [{
+		"id": 1,
+		"sensor_id": 1,
+		"sensor_name": "Sensor 1",
+		"flowrate": 759.99,
+		"datetime": "2019-02-05T20:15:08+00:00"
+	}, {
+		"id": 2,
+		"sensor_id": 1,
+		"sensor_name": "Sensor 1",
+		"flowrate": 0.0,
+		"datetime": "2019-02-05T19:44:09+00:00"
+	}]
 }
 ```
 
@@ -179,61 +133,11 @@ This endpoint retrieves a specific kitten.
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`GET https://app.flowcommand.com/api/v1/flow_sensors/<FLOW_SENSOR_ID>/pings/`
 
 ### URL Parameters
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to retrieve
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
-```
-
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
+page | 1 | Page (each page contains 1000 items)
 
